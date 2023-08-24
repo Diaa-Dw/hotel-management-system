@@ -1,4 +1,6 @@
+import React from "react";
 import styled from "styled-components";
+import { formatCurrency } from "../../utils/helpers";
 
 const TableRow = styled.div`
   display: grid;
@@ -38,3 +40,17 @@ const Discount = styled.div`
   font-weight: 500;
   color: var(--color-green-700);
 `;
+
+export default function CabinRow({ cabin }) {
+  const { id, name, maxCapacity, regularPrice, discount, discription, image } =
+    cabin;
+  return (
+    <TableRow>
+      <Img src={image} alt={name} />
+      <Cabin>{name}</Cabin>
+      <div>{maxCapacity}</div>
+      <Price>{formatCurrency(regularPrice)}</Price>
+      {Discount && <Discount>{formatCurrency(discount)}</Discount>}
+    </TableRow>
+  );
+}
