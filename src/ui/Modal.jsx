@@ -1,3 +1,11 @@
+import React, {
+  cloneElement,
+  createContext,
+  useContext,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+import { AiOutlineClose } from "react-icons/ai";
 import styled from "styled-components";
 
 const StyledModal = styled.div`
@@ -10,6 +18,7 @@ const StyledModal = styled.div`
   box-shadow: var(--shadow-lg);
   padding: 3.2rem 4rem;
   transition: all 0.5s;
+  z-index: 100;
 `;
 
 const Overlay = styled.div`
@@ -20,8 +29,9 @@ const Overlay = styled.div`
   height: 100vh;
   background-color: var(--backdrop-color);
   backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: 10;
   transition: all 0.5s;
+  cursor: pointer;
 `;
 
 const Button = styled.button`
@@ -48,3 +58,48 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+const ModalContext = createContext();
+
+export const Modal = ({ children }) => {
+  const [openName, setOpenName] = useState("");
+
+  const close = () => {
+    setOpenName("");
+  };
+
+  const open = setOpenName;
+
+  return (
+    <ModalContext.Provider value={{ close, open, openName }}>
+      {children}
+    </ModalContext.Provider>
+  );
+};
+
+const Open = ({ children, opens }) => {
+  const { open } = useContext(ModalContext);
+  return cloneElement(children, { onClick: () => open(opens) });
+};
+
+function Window({ children, name }) {
+  const { openName, close } = useContext(ModalContext);
+
+  if (name !== openName) return null;
+
+  return createPortal(
+    <>
+      <Overlay onClick={close}></Overlay>
+      <StyledModal>
+        <Button onClick={close}>
+          <AiOutlineClose />
+        </Button>
+        <div>{cloneElement(children, { onClose: close })}</div>
+      </StyledModal>
+    </>,
+    document.body
+  );
+}
+
+Modal.Open = Open;
+Modal.Window = Window;
