@@ -91,7 +91,7 @@ const Row = ({ children }) => {
 const Body = ({ data, render }) => {
   return (
     <StyledBody>
-      {data?.length !== 0 ? data.map(render) : "no data to show"}
+      {data?.length !== 0 ? data.map(render) : <Empty>no data to show</Empty>}
     </StyledBody>
   );
 };
@@ -99,3 +99,4 @@ const Body = ({ data, render }) => {
 Table.Header = Header;
 Table.Row = Row;
 Table.Body = Body;
+Table.Footer = Footer;

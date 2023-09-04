@@ -1,5 +1,39 @@
 import { getToday } from "../utils/helpers";
-import supabase from "./supabase.js";
+import { supabase } from "./supabase.js";
+import { PAGE_SIZE } from "../utils/constant";
+export const getBookings = async ({ filter, sortBy, page }) => {
+  console.log(sortBy);
+  let query = supabase
+    .from("bookings")
+    .select("*,cabins(*), guests(*)", { count: "exact" });
+
+  //filter
+  if (filter) query = query.eq(filter.field, filter.value);
+
+  //sort
+  if (sortBy)
+    query = query.order(sortBy.field, {
+      ascending: sortBy.method === "asc",
+    });
+
+  //pagination
+  console.log(page);
+  if (page) {
+    const from = (page - 1) * PAGE_SIZE - 1;
+    const to = from + PAGE_SIZE - 1;
+    console.log(from, to);
+
+    query = query.range(from, to);
+  }
+  const { data, error, count } = await query;
+  if (error) {
+    console.error(error);
+
+    throw new Error("Booking could not be loaded");
+  }
+
+  return { data, count };
+};
 
 export async function getBooking(id) {
   const { data, error } = await supabase
@@ -20,7 +54,7 @@ export async function getBooking(id) {
 export async function getBookingsAfterDate(date) {
   const { data, error } = await supabase
     .from("bookings")
-    .select("created_at, totalPrice, extrasPrice")
+    .select("created_at, total, extraPrice")
     .gte("created_at", date)
     .lte("created_at", getToday({ end: true }));
 

@@ -13,3 +13,17 @@ const StyledSelect = styled.select`
   font-weight: 500;
   box-shadow: var(--shadow-sm);
 `;
+
+import React from "react";
+
+export default function Select({ options, value, type, onChange }) {
+  return (
+    <StyledSelect value={value} type={type} onChange={onChange}>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </StyledSelect>
+  );
+}

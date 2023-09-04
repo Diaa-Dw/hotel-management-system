@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { styled } from "styled-components";
+import  styled  from "styled-components";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { getCabins } from "../services/apiCabins";
@@ -15,6 +15,7 @@ const Main = styled.main`
   background-color: var(--color-grey-50);
   padding: 4rem 4.8rem 6.4rem;
   overflow-y: auto;
+
 `;
 
 export default function AppLayout() {
